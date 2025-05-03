@@ -1,4 +1,4 @@
-Day 3.- Elasticsearch setup
+Day 3.- Setting up Elasticsearch
 
 1.-Setting up a Virtual Network in Microsoft Azure
 
@@ -94,4 +94,59 @@ Now what we want to do is start the Elasticsearch service and to do that we are 
 
 ![imagen](https://github.com/user-attachments/assets/805ca041-da32-459b-a98d-d63a159a2b22)
 
+Day 4.- Setting up Kibana
 
+To install Kibana in our VM we are going to do the same as before when we installed Elasticsearch. In the official page for Elastic we are going to look for Kibana in the ELK Stack and head to its download page, once here we need to select the platform, once again is going to be "DEB x86_64" and then right click the Download button and copy the link.
+
+First we are going to download it in our VM, to do that we are going to use the command `wget https://artifacts.elastic.co/downloads/kibana/kibana-9.0.0-amd64.deb`.
+
+![imagen](https://github.com/user-attachments/assets/ef79f580-9022-473f-ac3a-b709e8368bd2)
+
+Now to install it we are going to use the command `dpkg -i kibana-9.0.0-amd64.deb` and then press Enter.
+
+![imagen](https://github.com/user-attachments/assets/57747e03-c22d-42db-a0a6-cc67d5d78175)
+
+Next we need to make a couple of changes to the configuration file of kibana, which is located in etc/kibana/kibana.yml. We can edit the file using the command `nano etc/kibana/kibana.yml`
+Inside the configuration file we are going to be editing 2 lines. The first contains "server.port: 5601" and the second "server.host: "localhost". To make it so that the lines are read after executing Kibana we are going to remove the # symbol at the start of the line. Then we are going to replace the "localhost" string in the server.host line and change it to the Public IP of our VM.
+
+![imagen](https://github.com/user-attachments/assets/eda90e4b-125f-436e-bebc-3eaa44cbe91b)
+
+After editing the file we are going to start the service using the next commnands, `systemctl daemon-reload`, `systemctl enable kibana.service`, `systemctl start kibana.service` and finally we are going to use the commnad `systemctl status kibana.service` to verify if the service is running.
+
+![imagen](https://github.com/user-attachments/assets/1bea11bf-6f8c-4f72-9950-089986b9a860)
+
+Before we access Kibana we need to generate a Elasticsearch enrollment token. To do that we are going to head to the directory of `cd /usr/share/elasticsearch/bin` inside this directory we are interested in the file "elasticsearch-create-enrollment-token". To generate the token we will use this command ` ./elasticsearch-create-enrollment-token --scope kibana`
+
+![imagen](https://github.com/user-attachments/assets/641521df-8575-42ed-a1b7-6e2ed4f47e6b)
+
+After running the command a string of characters will be displayed, we will copy it and save it.
+
+Now we will be accessing our Kibana instance via web browser using the public IP of our VM and the port 5601.
+
+![imagen](https://github.com/user-attachments/assets/328fb186-e450-410d-a298-37eef7af56ca)
+
+Here is where we are going to be using the token we generated earlier. Justo go ahead and paste it in and then click "COnfigure Elastic". After that is going to ask us for another code, which can be obtained by first heading to the directory of usr/share/kibana/bin, here we are going to be running the command `./kibana-verification-code`.
+
+![imagen](https://github.com/user-attachments/assets/1de9429f-1ba4-4fbe-b60f-46e874310121)
+
+After it finish configuring Elastic, it will prompt us for a username and a password. Earlier in this project we copy a couple of lines for the installation of Elasticsearch with the words "Security autoconfiguration information", these contain the user and password for Elastic. The default user is Elastic and the password is contained within the text.
+
+![imagen](https://github.com/user-attachments/assets/76a794cf-0ff8-4aa4-b12c-0dfa9419bd6d)
+
+In this new screen we will hit "explore on my own". Now finally we will do one more configuration, we can start by clicking on the 3 lines on the top right corner of the screen and then selecting "Alerts" within the Security section.
+
+![imagen](https://github.com/user-attachments/assets/abd6c8f3-56f6-45d9-bc06-f126f2418cf2)
+
+Once inside it will give us an error, the same alert give us the instructions to solve it.
+
+![imagen](https://github.com/user-attachments/assets/f7ec24ff-604e-4e59-962c-c69a66e961f4)
+
+Going back to our VM, we need to run the "kibana-encryption-keys" file. To run it we can use the command `./kibana-encryption-keys generate`. This will generate 3 encryption keys which we will need to copy and save them. This keys will be paste in the "kibana-keystore" file, to do that we will use the command `./kibana-keystore add xpack.encryptedSavedObjects.encryptionKey`. Once we run this command it will ask us for the key. After doing that we will repeat the same process with the other 2 keys.
+
+![imagen](https://github.com/user-attachments/assets/83ddf6e6-12c4-4730-af93-47379d45fdf2)
+
+After doing that we need to restart the service using `systemctl restart kibana.service` and then reload the webpage. Once done that we would have successfully installed Kibana.
+
+![imagen](https://github.com/user-attachments/assets/4192f125-8c4e-4aea-849a-1575cd7f6c1b)
+
+Day 5.-
