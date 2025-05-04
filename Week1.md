@@ -149,4 +149,68 @@ After doing that we need to restart the service using `systemctl restart kibana.
 
 ![imagen](https://github.com/user-attachments/assets/4192f125-8c4e-4aea-849a-1575cd7f6c1b)
 
-Day 5.-
+Day 5.-Creating a Windows Server 2022 Virtual Machine
+
+We are going to be creating a Windows Server Virtual Machine in Microsoft Azure. This VM is going to be the one being attacked and where we are going to get the logs from.
+
+To start we are going to go to Microsoft Azure Portal and select "Virtual Machines" and then click "Create" followed by "Azure Virtual Machine". For the name of this VM I'll be using "CSBarista-WINSER", select the same region as the other VM we've created, and in image we select "Windows Server 2022 Datacenter - x64 Gen2".
+
+![image](https://github.com/user-attachments/assets/757a90a8-19c8-43e9-810b-b1bacad3b5cc)
+
+Once done that we need to create a user and a password so that we can have access to the machine and for the field of "Select inbound ports" we'll need to add HTTP and HTTPS. For the rest of the fields we'll leave it as dafault.
+
+![image](https://github.com/user-attachments/assets/cc510d8a-3fcb-45e4-8527-f33666162ca9)
+
+To continue we are going to leave the "Disks" section as default and in the "Networking" section we are going to create a default Virtual Network, we are not going to be using the Virtual Network we created earlier because we don't want outsiders who compromised our Windows Server machine to have access to the rest of the VMs. So we are going to create a different Virtual Network and leave everything else by default.
+
+![image](https://github.com/user-attachments/assets/a498ffc4-2193-4943-a353-47eabea33c72)
+
+Finally we are not going to be configuring anything else, so we can go ahead and click "Review + Create" and then "Create". Once the machine has been deploy we can try to connect to it using the public IP given to us by Azure. To connect to the machine we can use "Remote Desktop Connection" an application that comes by default with windows that will allow us to connect remotely to another machine using an IP, a User, and a Password. To open the application we press "Windows Key + R" and search by "mstsc".
+
+![image](https://github.com/user-attachments/assets/fbc1e107-c6fe-4164-bada-d009a4437a13)
+
+![image](https://github.com/user-attachments/assets/cae42a9b-d9ef-442f-9588-d872948e8967)
+
+Once we click connect it will ask us to provide a User and a Password, we will need to input the one we used to create the VM. After that it will show a message saying that the identity of the remote computer cannot be verified, in this case we can ignore that and click "Yes".
+
+![image](https://github.com/user-attachments/assets/aeb873d7-ddde-4b00-905b-34d53c4ac470)
+
+Day 6.-Elastic Agent and Fleet Server Introduction
+
+Elastic Agent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
