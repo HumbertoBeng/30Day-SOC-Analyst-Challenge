@@ -175,25 +175,56 @@ Once we click connect it will ask us to provide a User and a Password, we will n
 
 ![image](https://github.com/user-attachments/assets/aeb873d7-ddde-4b00-905b-34d53c4ac470)
 
-Day 6.-Elastic Agent and Fleet Server Introduction
+Day 6.- Elastic Agent and Fleet Server Introduction
 
 Elastic Agent
 
+Day 7.- Setting up Elastc Agent and Fleet Server
 
+First things we are going to do is create another Virtual Machien for our Fleet Server. Same as the other VMs we've created earlier we are going to create a new VM instance in Microsoft Azure, I'll be giving it the name of "CSBarista-FleetServ", using the image uf Ubuntu Server 22.04, choosing a Username and Password and finally we are going to add it to our Virtual Network so that it can comunicate to our ELK server.
 
+![image](https://github.com/user-attachments/assets/ef390842-fc71-4834-9b16-003d98cdf531)
 
+While the VM finishes deploying, lets head to Elastic using the "public IP:5601" and then head to the top left corner click the 3 lines icon and search for "Fleet" within the "Management" section.
 
+![image](https://github.com/user-attachments/assets/5c29cc4f-cb74-4113-b713-a89efaa78f8e)
 
+Here we will be presented with a "Add Fleet Server" which we are going to click it. To add a Fleet server we are going to use the "Quick Start" option, then we are going to give the server a name, I'll be using "CSBarista-Fleet-Server" and for the URL we are going to be using the public IP of the VM we just created ,which should be done deploying by now, and add https://, after that we can click on "Generate Fleet Server policy".
 
+![image](https://github.com/user-attachments/assets/7359d651-3ead-49bb-ba75-1d55f97e9551)
 
+After the process finishi creating the new policy, we are going to install the Fleet Server Agent on our newly created VM. But before doing that we are going to run the usual command of `apt-get update && apt-get upgrade -y`. Continuing with the installation of our Agent we are going to copy the command for "Linux Tar" which is:
+`curl -L -O https://artifacts.elastic.co/downloads/beats/elastic-agent/elastic-agent-9.0.0-linux-x86_64.tar.gz
+tar xzvf elastic-agent-9.0.0-linux-x86_64.tar.gz
+cd elastic-agent-9.0.0-linux-x86_64
+sudo ./elastic-agent install \
+  --fleet-server-es=https://172.31.0.4:9200 \
+  --fleet-server-service-token=AAEAAWVsYXN0aWMvZmxlZXQtc2VydmVyL3Rva2VuLTE3NDY0OTIxMzE2NTA6dV9CRU03Z29SQTJRUDJJakx3TW0xZw \
+  --fleet-server-policy=fleet-server-policy \
+  --fleet-server-es-ca-trusted-fingerprint=e36035cef7fb4939a59466e09d30b2f837b1953a768492c0fe325556e6348326 \
+  --fleet-server-port=8220 \
+  --install-servers`
+and paste it in the VM we created for Fleet. it will prompt us with a question and we can just answer witn "y". After a couple of minutes when the installation finishes we should see in our Elastic page that the Fleet Server is now connected to Elastic.
 
+![image](https://github.com/user-attachments/assets/ee62427b-d551-40ff-bd2c-cdccf3c4ba00)
 
+We may run into errors in the future due to the network configuration for rules we created early in this project when configuring our ELK server, so let's add a rule to our server firewall to allow traffic from port 9200.
 
+![image](https://github.com/user-attachments/assets/65ee0c73-e408-4138-9702-8f6f2f1e4dbd)
 
+Now continuing with the configuration of our Elastic Agent we are going to click on "Continue enroilling Elastic Agent". It will ask us "What type of host do you want to monitor?" so we are going to give it a name to the host, I'll be using "CSBarista-Windows-Policy" as the name, after that we can click on "Create policy". 
 
+![image](https://github.com/user-attachments/assets/380082f5-8e83-496d-b834-d79d2def80ec)
 
+Once the policy is created we can scroll down and select the host we are going to be using, in this case we are going to be using Windows so we are going to copy the command. Note that we are going to need admin privileges to run this command.
 
+![image](https://github.com/user-attachments/assets/5ffff378-d48d-409c-b9d2-c07af1824bde)
 
+After running the command the installation failed saying that it couldn't connect to our fleet-server, so running through the documentation for installing a Elastic Agent it says that the connection is usually made in port 8220 but in the configuration the port is set to 443. To make that change we are going to go to the Settings tab within our Fleet page and change the port of our IP from 443 to 8220 clicking on the pencil.
+
+![image](https://github.com/user-attachments/assets/6fbf8f40-f2aa-40d3-9266-e03a87582a92)
+
+Also before we run the command we are going to add `--insecure` to the end, otherwise it will give another failed installation because the URL doesn't have a real certificate.
 
 
 
