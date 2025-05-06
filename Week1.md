@@ -224,7 +224,16 @@ After running the command the installation failed saying that it couldn't connec
 
 ![image](https://github.com/user-attachments/assets/6fbf8f40-f2aa-40d3-9266-e03a87582a92)
 
-Also before we run the command we are going to add `--insecure` to the end, otherwise it will give another failed installation because the URL doesn't have a real certificate.
+Also before we run the command we are going to add `--insecure` at the end, otherwise it will give another failed installation because the web page doesn't have a certificate.
+
+![image](https://github.com/user-attachments/assets/347bc521-6abd-4fc7-abc1-32965ba31ead)
+
+In Elastic it will also show our Fleet server and our Agent.
+
+![image](https://github.com/user-attachments/assets/257c4230-d03a-4e5f-940d-58c755eae259)
+
+
+
 
 
 
