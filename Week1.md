@@ -1,6 +1,65 @@
-Day 3.- Setting up Elasticsearch
+# Week 1 of 30 Day SOC Analyst Challenge. Created by MyDFIR
 
-1.-Setting up a Virtual Network in Microsoft Azure
+## Day 1 - Logical Diagram
+
+We created a diagram to show the workflow of the project and the resources we are going to be using over the course of this project. The diagram was created using <a href="https://app.diagrams.net/">Draw.io</a>.
+
+![Day1-LogicalDiagram-Revised(2)](https://github.com/user-attachments/assets/c9e1e77a-85ee-40dc-81b9-4bf16fe40b9d)
+
+For this project we are going to be using:
+  - 6 Servers
+    * Elastic & Kibana (Ubuntu Server 24.02)
+    * Fleet Server (Ubuntu Server 22.02)
+    * Windows Server (Windows Server 2022)
+    * Ubuntu Server (Ubuntu Server 24.02)
+    * OS Ticket Server
+    * C2 Server Mythic
+  - 2 Virtual Machines
+    * Atacker Machine (Kali Linux)
+    * SOC Analyst Machine (Windows 10)
+
+All machines will be hosted using a cloud service provider called Microsoft Azure.
+For our Virtual Private Network (VPC) we are going to assign the private IP of 172.31.0.0/24 with a range of 172.31.0.1 - 254 with a subnet of 255.255.255.0.
+
+## Day 2 - ELK Stack Introduction
+
+_Elasticsearch_, _Logstash_ and _Kibana_ also known as ELK Stack is a group of technologies used for managing and analyzing large volumes of data. It allows users to collect, process, and visualize data in rea-time, making it a powerful solution for log management and analytics.
+
+### Elasticsearch, Logstash and Kibana
+
+**Elasticsearch** is a database where different types of logs are stored.
+
+**Logstash** is a pipeline that collects telemetry across various sources. There are different ways to collect telemetry, but the most popular are *Beats* and *Elastic Agents*.
+  - Beats
+    * File Beat collects Logs.
+    * Metric Beat collects metrics.
+    * Packet beat collects Network Data.
+    * Winlog Beat collects Windows Events.
+    * Audit Beat collects Audit Data.
+    * Heartbeat Beat cocllects Uptime.
+  
+  - Elastic Agent
+    * Collects all kinds of data with a single agent.
+
+**Kibana** is a data visualization and exploration tool used for log and time-series analytics, application monitoring, and operational intelligence use cases. It offers powerful and easy-to-use features such as histograms, line graphs, pie charts, heat maps, and built-in geospatial support.
+
+### Benefits of using ELK Stack
+
+- Centralized Logging
+  * Meet Compliance requirements and search data
+- Flexibility
+  * Customized Ingestion
+- Visualizations
+  * Observe information at-a-glance
+- Scalability
+  * Easy to configure to handle larger environments
+- Ecosystem
+  * Many integrations and rich community
+
+
+## Day 3.- Setting up Elasticsearch
+
+### 3.1.-Setting up a Virtual Network in Microsoft Azure
 
 First we are going to look for the Icon for "Virtual Network" as show in the image.
 
@@ -21,7 +80,7 @@ We will not be setting "Security" for now. So in the "IP address" tab we are goi
 Finally we click on the "Review + create" button to create our Virtual Network.
 
 
-2.-Creating our Virtual Machines
+### 3.2.-Creating our Virtual Machines
 
 First we are going to look for the Icon for "Virtual Machines" as show in the image.
 
@@ -53,7 +112,7 @@ Finally we are going to need to put up some security mesures to our VM. To do th
 
 We are going to change the field of "Source" and change it to "My IP address" so that nobody other than ourselves can have access to our VM.
 
-3.- Installing Elasticsearch
+### 3.3.- Installing Elasticsearch
 
 To install Elasticsearch we can search for "Elasticsearch" and it the first result should be the oficial page "Elastic.io" and there should be an option to download which will take us to that section of the oficial site.
 
@@ -66,7 +125,6 @@ Once inside the Download page we are going to choose the platform as "deb x86_64
 To make sure it was installed correctly we can input the command `ls` and verify that the files are there. 
 
 ![imagen](https://github.com/user-attachments/assets/1e594a66-85ed-4060-9f39-2c8d6dcbb1d9)
-
 
 Now to install Elasticsearch in our VM we are going to input the next command `dpkg -i elasticsearch-9.0.0-amd64.deb` and press Enter.
 
@@ -94,7 +152,7 @@ Now what we want to do is start the Elasticsearch service and to do that we are 
 
 ![imagen](https://github.com/user-attachments/assets/805ca041-da32-459b-a98d-d63a159a2b22)
 
-Day 4.- Setting up Kibana
+## Day 4.- Setting up Kibana
 
 To install Kibana in our VM we are going to do the same as before when we installed Elasticsearch. In the official page for Elastic we are going to look for Kibana in the ELK Stack and head to its download page, once here we need to select the platform, once again is going to be "DEB x86_64" and then right click the Download button and copy the link.
 
@@ -149,7 +207,7 @@ After doing that we need to restart the service using `systemctl restart kibana.
 
 ![imagen](https://github.com/user-attachments/assets/4192f125-8c4e-4aea-849a-1575cd7f6c1b)
 
-Day 5.-Creating a Windows Server 2022 Virtual Machine
+## Day 5.-Creating a Windows Server 2022 Virtual Machine
 
 We are going to be creating a Windows Server Virtual Machine in Microsoft Azure. This VM is going to be the one being attacked and where we are going to get the logs from.
 
@@ -175,11 +233,18 @@ Once we click connect it will ask us to provide a User and a Password, we will n
 
 ![image](https://github.com/user-attachments/assets/aeb873d7-ddde-4b00-905b-34d53c4ac470)
 
-Day 6.- Elastic Agent and Fleet Server Introduction
+## Day 6.- Elastic Agent and Fleet Server Introduction
 
-Elastic Agent
+**Elastic Agent** provies a unified way to add monitoring for logs, metrics, and many different types of data. Elastic Agents are part of the Elastic ecosystem designed to simplify and unify data collection across various sources, facilitating observability, security, and search functionalities. They allow for efficient monitoring of logs, metrics, and other types of data from hosts, thereby enhancing the deployment and management of monitoring infrastructure. Elastic Agents operate under a single, unified approach, aiming to streamline data collection processes, configuration, and scalability across different environments.
 
-Day 7.- Setting up Elastc Agent and Fleet Server
+**Fleet server** Is a component that connects the Elastic Agent to Fleet that will allow us to manage multiple agents in a centralized locationis a component that connects Elastic Agents to Fleet. It supports many Elastic Agent connections and serves as a control plane for updating agent policies, collecting status information, and coordinating actions across Elastic Agents. It also provides a scalable architecture.
+
+
+### 6.1.- Difference between a Beat and an Agent
+A Beat makes it more easy to collect specific type of logs from machines whereas an Agent collects all kinds of data from a machine.
+
+
+## Day 7.- Setting up Elastc Agent and Fleet Server
 
 First things we are going to do is create another Virtual Machien for our Fleet Server. Same as the other VMs we've created earlier we are going to create a new VM instance in Microsoft Azure, I'll be giving it the name of "CSBarista-FleetServ", using the image uf Ubuntu Server 22.04, choosing a Username and Password and finally we are going to add it to our Virtual Network so that it can comunicate to our ELK server.
 
@@ -193,7 +258,9 @@ Here we will be presented with a "Add Fleet Server" which we are going to click 
 
 ![image](https://github.com/user-attachments/assets/7359d651-3ead-49bb-ba75-1d55f97e9551)
 
-After the process finishi creating the new policy, we are going to install the Fleet Server Agent on our newly created VM. But before doing that we are going to run the usual command of `apt-get update && apt-get upgrade -y`. Continuing with the installation of our Agent we are going to copy the command for "Linux Tar" which is:
+After the process finishi creating the new policy, we are going to install the Fleet Server Agent on our newly created VM. But before doing that we are going to run the usual command of `apt-get update && apt-get upgrade -y`. 
+
+Continuing with the installation of our Agent we are going to copy the command for "Linux Tar" which is:
 `curl -L -O https://artifacts.elastic.co/downloads/beats/elastic-agent/elastic-agent-9.0.0-linux-x86_64.tar.gz
 tar xzvf elastic-agent-9.0.0-linux-x86_64.tar.gz
 cd elastic-agent-9.0.0-linux-x86_64
@@ -204,6 +271,7 @@ sudo ./elastic-agent install \
   --fleet-server-es-ca-trusted-fingerprint=e36035cef7fb4939a59466e09d30b2f837b1953a768492c0fe325556e6348326 \
   --fleet-server-port=8220 \
   --install-servers`
+
 and paste it in the VM we created for Fleet. it will prompt us with a question and we can just answer witn "y". After a couple of minutes when the installation finishes we should see in our Elastic page that the Fleet Server is now connected to Elastic.
 
 ![image](https://github.com/user-attachments/assets/ee62427b-d551-40ff-bd2c-cdccf3c4ba00)
